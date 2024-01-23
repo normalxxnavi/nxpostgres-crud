@@ -1,14 +1,17 @@
-import Form from "@/components/Form_Proveedor"
-import { db } from "@/lib/mysql"
+import Form from "@/components/Form"
+import { sql } from '@vercel/postgres';
 import { editProveedores } from "@/lib/actions"
 
+export const dynamic = 'force-dynamic'
+
 async function page({searchParams}) {
-  const [ proveedor ] = await db.query('select * from proveedores where id = ?', [ searchParams.id ]);
+  const { rows }  = await sql`select * from proveedores where id = ${searchParams.id};` 
+  const proveedor = rows[0];
 
   return (
     <div>
-        <h3>Editar Proveedor {searchParams.id}</h3>
-        <Form action={editProveedores} title='Editar artículo' proveedor={proveedor} disabled={false}  />
+        <h3>Editar artículo {searchParams.id}</h3>
+        <Form action={editProveedores} title='Editar proveedor' proveedor={proveedor} disabled={false}  />
     </div>
   )
 }
